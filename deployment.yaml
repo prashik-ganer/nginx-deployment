@@ -1,9 +1,7 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
 metadata:
-  name: nginx-deployment
-  labels:
-    app: nginx
+  name: nginx-rollout
 spec:
   replicas: 2
   selector:
@@ -19,3 +17,10 @@ spec:
           image: nginx:latest
           ports:
             - containerPort: 80
+  strategy:
+    canary:
+      steps:
+        - setWeight: 50
+        - pause: {}
+      trafficRouting:
+        # traffic routing configuration (if using something like Istio or Nginx Ingress)
